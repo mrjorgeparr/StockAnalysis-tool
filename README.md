@@ -14,8 +14,9 @@ This project is a web analytics tool for scraping data from Yahoo Finance to obt
 
 - **Dimensionality Reduction**: We employ techniques such as t-SNE (t-Distributed Stochastic Neighbor Embedding) and Autoencoders (AE) to reduce the dimensionality of the data, aiding in visualization and clustering.
 
-- **Graph Theory and Bayesian Analysis**: We apply graph theory and Bayesian graph analysis to construct a reduced subset of data for K-Nearest Neighbors (KNN) classification, optimizing the speed and accuracy of predictions.
+- **Graph Theory and Bayesian Analysis**: We apply graph theory and Bayesian graph analysis to construct a reduced subset of data for K-Nearest Neighbors (KNN) classification, optimizing the speed and accuracy of predictions, based on the approach proposed in ***Improving kNN multi-label classification in Prototype Selection scenarios using class proposals, Pattern Recognition Volume 48***, reference:
 
+  https://www.sciencedirect.com/science/article/pii/S0031320314004853
 ## Financial Features
 
 1. **Price/Earnings (P/E) Ratio**: A valuation ratio of a company's current share price compared to its earnings per share (EPS). It indicates how much investors are willing to pay for each dollar of earnings.
