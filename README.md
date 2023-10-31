@@ -49,3 +49,16 @@ This project is a web analytics tool for scraping data from Yahoo Finance to obt
    
    ```bash
    git clone https://github.com/your-username/stock-analysis.git
+
+
+## Development timeline
+
+###  Scraping
+
+The data gathering process involved two steps,
+  1. Obtaining list of stock tickers (from various websites such as this one: https://stockanalysis.com/stocks/, and sort them based on market cap.
+  2. Simple scraping for the features which is done through Scrapy, Selenium or requests, with the appropriate url
+
+### Dimensionality reduction
+
+To produce a scatter plot, a dimensionality reduction scheme is needed, t-SNE (t-stochastic neighbour embedding) suffices if no inference is to be made on reduced set. Once we obtain it, produce interactive scatter plot.
