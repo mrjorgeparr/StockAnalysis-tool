@@ -19,17 +19,28 @@ This project is a web analytics tool for scraping data from Yahoo Finance to obt
                                   https://www.sciencedirect.com/science/article/pii/S0031320314004853
 ## Financial Features
 
-1. **Price/Earnings (P/E) Ratio**: A valuation ratio of a company's current share price compared to its earnings per share (EPS). It indicates how much investors are willing to pay for each dollar of earnings.
+1. **Forward Annual Dividend Yield**: Anticipates future dividend payments.
 
-2. **EBITDA (Earnings Before Interest, Taxes, Depreciation, and Amortization)**: A measure of a company's operating performance that excludes interest, taxes, and non-cash expenses. It provides a clearer picture of a company's profitability.
+2. **Trailing Annual Dividend Yield**: Reflects the past year's performance.
 
-3. **Profit Margins**: A measure of a company's profitability, often expressed as a percentage. It shows how much profit a company makes for every dollar in sales.
+3. **5-Year Average Dividend Yield**: Evaluates long-term dividend consistency.
 
-4. **Market Capitalization (Market Cap)**: The total value of a company's outstanding shares of stock. It is calculated by multiplying the share price by the number of outstanding shares.
+4. **Payout Ratio**: Indicates dividend sustainability.
 
-5. **Yearly Percentage Change in Stock Price**: A measure of how a stock's price has changed over the past year, expressed as a percentage.
+5. **Profit Margin**: Measures the ability to fund dividends with higher profits.
 
-6. **Dividend Rate**: The percentage of a stock's price that is paid to shareholders as dividends. It provides an indication of the return on investment from dividends.
+6. **Return on Equity (ROE)**: Evaluates efficiency in generating returns.
+
+7. **Total Cash (mrq)**: Ensures dividend obligations can be met.
+
+8. **Total Debt/Equity (mrq)**: Assesses financial conservatism.
+
+9. **Operating Cash Flow (ttm)**: Vital for sustaining dividend payments.
+
+10. **Levered Free Cash Flow (ttm)**: Manages debt for dividend distribution.
+
+11. **Focus on Debt-to-Equity Ratio, Cash Flow, and Leverage**: These metrics are essential for maintaining a healthy financial structure.
+
 
 ## Installation
 
