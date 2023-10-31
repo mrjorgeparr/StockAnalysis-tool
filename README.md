@@ -2,7 +2,8 @@
 
 ## Overview
 
-This project is a web analytics tool for scraping data from Yahoo Finance to obtain key financial features of stocks, including Price/Earnings (P/E) ratio, EBITDA, profit margins, Market Capitalization, yearly percentage change in stock price, and dividend rate. The goal of this project is to provide insights into stock clustering based on these features and the discretized dividend rate.
+This project is a web analytics tool for scraping data from Yahoo Finance to obtain key financial features of stocks. The objective is to provide insights into stock clustering based on these features and the discretized dividend rate.
+
 
 ## Features
 
