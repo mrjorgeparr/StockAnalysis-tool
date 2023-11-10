@@ -31,9 +31,11 @@ class baseBuilder:
         return self.graph
 
 if __name__ == "__main__":
+    """
     # Example usage
-    data = np.array([[0, 0,'A'], [1, 1, 'A'], [2, 2, 'B'], [3, 3,'B'], [4, 4,'B']])
+    data = np.array([[0, 0,'A'], [1, 10, 'A'], [5, 7, 'B'], [4, 3,'B'], [4, 4,'B']])
     graph_builder = baseBuilder()
     graph_builder.build_graph(data)
     graph = graph_builder.get_graph()
     print("Edges in the graph:", graph.edges())
+    """

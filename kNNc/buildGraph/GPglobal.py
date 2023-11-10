@@ -19,7 +19,7 @@ class GPglobal(baseBuilder):
         }
 
         centrality_values = centrality[centrality_measure](self.graph)
-        print(f"Centrality values found: {centrality_values}")
+        # print(f"Centrality values found: {centrality_values}")
         # Sort nodes by centrality measure
         sorted_nodes = sorted(centrality_values, key=centrality_values.get, reverse=True)
 
@@ -31,15 +31,21 @@ class GPglobal(baseBuilder):
         print(nodes_to_remove)
         self.graph.remove_nodes_from(nodes_to_remove)
 
+
 if __name__ == "__main__":
     # Example usage
 
-    """
-    npoints = 100
-    data = np.random.rand(npoints, 2)
-    processor = GraphProcessor()
+    npoints = 20
+    data = np.random.rand(npoints, 3)
+    for i in range(20):
+        if i // 2 == 0:
+            data[i,2] = 1
+        else:
+            data[i,2] = 2
+
+    processor = GPglobal()
     processor.build_graph(data)
     processor.ccrm("page_rank")
     graph = processor.get_graph()
     print("Edges in the graph after removing nodes:", graph.edges())
-    """
+    

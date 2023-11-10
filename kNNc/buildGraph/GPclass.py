@@ -7,11 +7,15 @@ class GPclass(baseBuilder):
     def __init__(self):
         super().__init__()
 
-    def ccrm(self, centrality_measure, class_labels):
+    def ccrm(self, centrality_measure, data, *, VERBOSE=False):
+
         if centrality_measure not in ["page_rank", "betweenness", "closeness", "degree", "eigenvector"]:
             raise ValueError("Invalid centrality measure")
+        
+        self.build_graph(data)
+        class_labels = data[:,-1]
 
-        centrality = {
+        centrality = {      
             "page_rank": nx.pagerank,
             "betweenness": nx.betweenness_centrality,
             "closeness": nx.closeness_centrality,
@@ -29,7 +33,7 @@ class GPclass(baseBuilder):
 
         # Initialize an empty list to store nodes to remove
         nodes_to_remove = []
-
+        print()
         # Iterate through each class
         for target_class in np.unique(list(class_labels.values())):
             # Filter nodes belonging to the current class
@@ -43,8 +47,10 @@ class GPclass(baseBuilder):
             
             # Add the bottom 80% of nodes to the removal list
             nodes_to_remove.extend(class_nodes[num_nodes_to_keep:])
+            if VERBOSE:
+                print(f"Removed nodes class {target_class}: {class_nodes[num_nodes_to_keep:]}")
         
-        print(nodes_to_remove)
+        # print(len(nodes_to_remove))
         self.graph.remove_nodes_from(nodes_to_remove)
 
 
@@ -52,25 +58,14 @@ class GPclass(baseBuilder):
 if __name__ == "__main__":
 
 # Sample data with features and class labels
-    data = np.array([
-        [0.1, 0.2, "ClassA"],
-        [0.3, 0.4, "ClassB"],
-        [0.5, 0.6, "ClassA"],
-        [0.7, 0.8, "ClassB"],
-        # Add more data points with class labels
-    ])
-
-    # Create a networkx graph from your data
-    G = nx.Graph()
-
-    # Initialize your GPglobal object
-    gpClass = GPclass()
-
-    # Set the graph in your GPglobal object
-    gpClass.build_graph(data)
-
-    # Extract class labels
-    class_labels = {i: data[i, -1] for i in range(data.shape[0])}
-
-    # Call the ccrm method with your chosen centrality measure
-    gpClass.ccrm(centrality_measure="page_rank", class_labels=class_labels)
+    npoints = 20
+    data = np.random.rand(npoints, 3)
+    for i in range(20):
+        if i // 2 == 0:
+            data[i,2] = 1
+        else:
+            data[i,2] = 2
+    processor = GPclass()
+    processor.ccrm("betweenness", data, VERBOSE=True)
+    graph = processor.get_graph()
+    print("Edges in the graph after removing nodes:", graph.edges())
