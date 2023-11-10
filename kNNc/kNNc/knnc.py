@@ -25,6 +25,7 @@ class kNNc:
         return self.knn_classifier.predict(X[c_classes])
 
 if __name__ == "__main__":
+    """
     # Example usage
     from sklearn.datasets import load_iris
     iris = load_iris()
@@ -34,3 +35,4 @@ if __name__ == "__main__":
     knnc.fit(X, y, subset)
     y_pred = knnc.predict(X)
     print(y_pred)
+    """
