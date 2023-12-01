@@ -95,6 +95,24 @@ class Tickerinfo(object):  # for additional type security
 def get_key_from_metric_label(label):
     return label.replace(" ", "_")
 
+def extract_value_from_format(input):
+    value = None    # TODO: maybe use NaN instead!?
+
+    if "%" in input:
+        value = float(input.replace("%", ""))
+    elif "M" in input:
+        value = float(input.replace("M", "")) * 1000 * 1000
+    elif "B" in input:
+        value = float(input.replace("B", "")) * 1000 * 1000 * 1000
+    elif input.replace('.','',1).isdigit():
+        value = float(input)
+    elif "N/A" in input:
+        pass  # value = None
+    else:
+        print("input not preprocessed: ", input)
+
+    return value
+
 def add_metrics_from_site(driver, metrics, metrics_by_label):
     
     if len(driver.find_elements(By.ID, 'Col1-0-KeyStatistics-Proxy')) == 0:
@@ -113,7 +131,9 @@ def add_metrics_from_site(driver, metrics, metrics_by_label):
 
         assert(len(child_elements) == 2)
         
-        metrics.append(child_elements[1].text)
+        # extract values from format
+        value = extract_value_from_format(child_elements[1].text) 
+        metrics.append(value)
         
         # TODO!
         #if get_key_from_metric_label(child_elements[0].text) != metric_label:
@@ -202,8 +222,6 @@ print("finished scraping")
 print(df_metrics)
 
 
-import os
 
-base = '/'.join(os.getcwd().split('/')[:-1])
-datasetpath = os.path.join(base, 'Dataset')
-df_metrics.to_csv(os.path.join(datasetpath, 'data.csv'))
+# save to project/Dataset/data.csv
+df_metrics.to_csv('./../Dataset/data.csv')
