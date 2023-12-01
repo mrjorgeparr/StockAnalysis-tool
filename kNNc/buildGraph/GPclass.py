@@ -52,15 +52,16 @@ class GPclass(baseBuilder):
         
         # print(len(nodes_to_remove))
         self.graph.remove_nodes_from(nodes_to_remove)
+        self.plot_graph(title='Filtered graph')
 
 
 
 if __name__ == "__main__":
 
 # Sample data with features and class labels
-    npoints = 20
+    npoints = 40
     data = np.random.rand(npoints, 3)
-    for i in range(20):
+    for i in range(40):
         if i // 2 == 0:
             data[i,2] = 1
         else:
