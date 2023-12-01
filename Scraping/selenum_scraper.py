@@ -200,3 +200,10 @@ finally:
 print()
 print("finished scraping")
 print(df_metrics)
+
+
+import os
+
+base = '/'.join(os.getcwd().split('/')[:-1])
+datasetpath = os.path.join(base, 'Dataset')
+df_metrics.to_csv(os.path.join(datasetpath, 'data.csv'))

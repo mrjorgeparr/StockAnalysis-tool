@@ -17,7 +17,7 @@ This project is a web analytics tool for scraping data from Yahoo Finance to obt
 
 - **Graph Theory and Bayesian Analysis**: We apply graph theory and Bayesian graph analysis to construct a reduced subset of data for K-Nearest Neighbors (KNN) classification, optimizing the speed and accuracy of predictions, based on the approach proposed in ***Improving kNN multi-label classification in Prototype Selection scenarios using class proposals***, reference:
 
-                            https://www.sciencedirect.com/science/article/pii/S0031320314004853
+                          https://www.sciencedirect.com/science/article/pii/S0031320314004853
 ## Financial Features
 
 1. **Forward Annual Dividend Yield**: Anticipates future dividend payments.
