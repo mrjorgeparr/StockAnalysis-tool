@@ -1,6 +1,9 @@
 import umap 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import os
+from sklearn.datasets import make_blobs
 
 
 class UMAPplot:
@@ -36,3 +39,17 @@ class UMAPplot:
         else:
             raise ValueError("Invalid number of components for plotting")
 
+if __name__ == "__main__":
+    """
+    """
+    nfet = 15
+    X, y = make_blobs(n_samples=300, centers=3, n_features=nfet, random_state=42)
+
+    # Create a DataFrame from the generated data
+    columns = [f"Feature {i+1}" for i in range(nfet)]
+    df = pd.DataFrame(X, columns=columns)
+    df['Label'] = y
+
+    # Test the UMAPplot class
+    umap_plotter = UMAPplot(features=df[columns], labels=df['Label'], n_comp=2)
+    umap_plotter.plot()
