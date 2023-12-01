@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 import pandas as pd
+import time 
 
 
 # supporting class with constants from the website (keys etc.)
@@ -98,6 +99,7 @@ def get_key_from_metric_label(label):
 def extract_value_from_format(input):
     value = None    # TODO: maybe use NaN instead!?
 
+    input = input.replace(",","") # erase every ",", they just show the thousends: 1,234. To spilt decimals, the "." is used
     if "%" in input:
         value = float(input.replace("%", ""))
     elif "M" in input:
@@ -145,29 +147,8 @@ def add_metrics_from_site(driver, metrics, metrics_by_label):
 
     return metrics
     
-	
-# -----------------------------------------------------------------------------------------------------------------------------------
-# ------------------------------------------ MAIN -----------------------------------------------------------------------------------
-# -----------------------------------------------------------------------------------------------------------------------------------
 
-options = webdriver.ChromeOptions()
-options.add_argument('--headless') # for not displaying the graphical environment, shows virtualized browser without GUI
-options.add_argument('--no-sandbox') # so that it can access machine resources, blocking sandbox processes it can access whatever
-options.add_argument('--disable-dev-shm-usage')  # colab does not have enough memory
-# open it, go to a website, and get results
-driver = webdriver.Chrome(options=options)
-
-url = "https://finance.yahoo.com/"
-driver.get(url)
-
-try:
-    # Accept cookies by clicking the button with the specified ID
-    print("accept cookies")
-    iframe = driver.find_element(By.CLASS_NAME, 'con-wizard')
-    accept_cookies_button = iframe.find_element(By.CLASS_NAME, 'accept-all')
-    accept_cookies_button.click()
-    
-    
+def get_trending_tickers_yahoo(driver):
     print("call trending tickers")
     # call url with tickers:
     driver.get("https://finance.yahoo.com/trending-tickers")
@@ -187,7 +168,88 @@ try:
         tickers.append(Tickerinfo(l.text, l.get_attribute("href")))
     
     print("getting tickers finished")
+    return tickers
+
+def get_nasdaq_100_tickers():
+    # get nasdaq-100 tickers from
+    # https://www.nasdaq.com/market-activity/quotes/nasdaq-ndx-index
+
+    print("set up driver for nasdaq website")
+    from selenium.webdriver.support.wait import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+
+    options = webdriver.ChromeOptions()
+    #options.add_argument('--headless') # for not displaying the graphical environment, shows virtualized browser without GUI
+    options.add_argument('--no-sandbox') # so that it can access machine resources, blocking sandbox processes it can access whatever
+    options.add_argument('--disable-dev-shm-usage')  # colab does not have enough memory
+    # open it, go to a website, and get results
+    driver = webdriver.Chrome(options=options)
+
+
+    try:
+        url = "https://www.nasdaq.com/market-activity/quotes/nasdaq-ndx-index"
+        driver.get(url)
+
+        time.sleep(5)
+        # Accept cookies by clicking the button with the specified ID
+        #iframe = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'onetrust-banner-sdk')))
+
+        print("accept cookies")
+        #print(driver.page_source)
+        iframe = driver.find_element(By.ID, 'onetrust-banner-sdk')
+        accept_cookies_button = iframe.find_element(By.ID, 'onetrust-accept-btn-handler')
+        accept_cookies_button.click()
+
+        print("get nasdaq-100 tickers")
+        tab = driver.find_element(By.TAG_NAME, 'tbody')
+        tickers = []
+        assert(tab)
+        elements = tab.find_elements(By.TAG_NAME, 'tr')
+
+        print("amount of tickers: ", len(elements))
+        #elements = elements[:5]  # TODO, take all tickers (only for testing)
+
+        links = [e.find_element(By.TAG_NAME, 'a') for e in elements]
+
+        for l in links:
+            tickers.append(Tickerinfo(l.text, l.get_attribute("href")))
+
+        print("getting tickers finished")
+    finally:
+        # Close the WebDriver
+        driver.quit()
+
+    print()
+    print("finished scraping nasdaq website")
     
+    return tickers
+	
+# -----------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------ MAIN -----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------------------
+print("set up driver for yahoo finance website")
+
+options = webdriver.ChromeOptions()
+options.add_argument('--headless') # for not displaying the graphical environment, shows virtualized browser without GUI
+options.add_argument('--no-sandbox') # so that it can access machine resources, blocking sandbox processes it can access whatever
+options.add_argument('--disable-dev-shm-usage')  # colab does not have enough memory
+# open it, go to a website, and get results
+driver = webdriver.Chrome(options=options)
+
+url = "https://finance.yahoo.com/"
+driver.get(url)
+
+try:
+    # Accept cookies by clicking the button with the specified ID
+    print("accept cookies")
+    iframe = driver.find_element(By.CLASS_NAME, 'con-wizard')
+    accept_cookies_button = iframe.find_element(By.CLASS_NAME, 'accept-all')
+    accept_cookies_button.click()
+    
+    #tickers = get_trending_tickers_yahoo(driver)
+    tickers = get_nasdaq_100_tickers()
+    
+    print("get metrics for "+str(len(tickers))+" tickers")
     required_metrics = Metrics().from_slides()
     
     df_metrics = pd.DataFrame(columns=[get_key_from_metric_label(label) for label in required_metrics])
@@ -219,9 +281,14 @@ finally:
     
 print()
 print("finished scraping")
-print(df_metrics)
+
+#print(df_metrics)
 
 
-
+print("save data in csv")
 # save to project/Dataset/data.csv
 df_metrics.to_csv('./../Dataset/data.csv')
+
+
+
+
