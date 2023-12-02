@@ -15,7 +15,7 @@ class UMAPplot:
         self.umres = self.umodel.fit_transform(self.data)
         
         if applyKernel:
-            self.kernel = KernelPCA(n_components=n_comp, kernel='poly', degree=3)
+            self.kernel = KernelPCA(n_components=n_comp, kernel='rbf', gamma=.3)
             self.umres = self.kernel.fit_transform(self.umres)
 
     def plot(self, ax=None):
@@ -38,8 +38,25 @@ class UMAPplot:
 
 if __name__ == "__main__":
     df = pd.read_csv('./../Dataset/scaledData.csv')
-    ################################# TO STUDY FEATURE SUBSETS WITH BETTER SEPARATION ##################################################
+    """
+
+    df.drop(['Unnamed: 0'], axis=1, inplace=True)
+    target = 'discretized FADY'
+    target = df.columns.tolist()[-1]
+    y = df[target]
+    X = df.drop(columns=[target, 'Ticker'], axis=1)
     
+    from sklearn.impute import SimpleImputer
+    imputer = SimpleImputer(strategy='mean')
+    X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
+    
+
+    # Test the UMAPplot class
+    umap_plotter = UMAPplot(features=X_imputed, labels=df[target], n_comp=2, applyKernel=True)
+    umap_plotter.plot()
+    plt.show()
+    ################################# TO STUDY FEATURE SUBSETS WITH BETTER SEPARATION ##################################################
+    """
     df.drop(['Unnamed: 0', 'Unnamed: 0.1'], axis=1, inplace=True)
     target = 'discretized FADY'
     target = df.columns.tolist()[-1]
@@ -73,6 +90,7 @@ if __name__ == "__main__":
     
     # umpPlotter.plot()
    
+    
     """
     print(df.head())
     ############### SCALING DATA  AND DISCRETIZING ############
@@ -91,6 +109,7 @@ if __name__ == "__main__":
     df2.drop(target, axis=1, inplace=True)
     df2.to_csv('./../Dataset/scaledData.csv')
     """
+    
 
 
     """

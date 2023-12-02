@@ -7,7 +7,7 @@ class GPclass(baseBuilder):
     def __init__(self):
         super().__init__()
 
-    def ccrm(self, centrality_measure, data, *, VERBOSE=False):
+    def ccrm(self, centrality_measure, data, *, VERBOSE=False, plot=False):
 
         if centrality_measure not in ["page_rank", "betweenness", "closeness", "degree", "eigenvector"]:
             raise ValueError("Invalid centrality measure")
@@ -52,7 +52,8 @@ class GPclass(baseBuilder):
         
         # print(len(nodes_to_remove))
         self.graph.remove_nodes_from(nodes_to_remove)
-        self.plot_graph(title='Filtered graph')
+        if plot: 
+            self.plot_graph(title='Filtered graph')
 
 
 
