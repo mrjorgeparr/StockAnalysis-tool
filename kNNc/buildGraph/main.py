@@ -8,11 +8,11 @@ if __name__ == "__main__":
     tosave = os.path.join(base, 'meaningfulSetse')
     os.makedirs(tosave)
     
-    files = [f for f in os.listdir(base) if f[0] == 'U']
+    files = [f for f in os.listdir(os.path.join(base, 'umap reduced'))]
     print(files)
     
     for f in files:
-        df = pd.read_csv(os.path.join(base, f))
+        df = pd.read_csv(os.path.join(base, 'umap reduced', f))
         bf = GPclass()
         # print(df.head())
         bf.ccrm("eigenvector", df.values, VERBOSE=False)
