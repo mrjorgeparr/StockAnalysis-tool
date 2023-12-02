@@ -5,7 +5,7 @@ import os
 
 if __name__ == "__main__":
     base = './../../Dataset'
-    tosave = os.path.join(base, 'meaningfulSetsb')
+    tosave = os.path.join(base, 'meaningfulSetse')
     os.makedirs(tosave)
     
     files = [f for f in os.listdir(base) if f[0] == 'U']
@@ -15,7 +15,7 @@ if __name__ == "__main__":
         df = pd.read_csv(os.path.join(base, f))
         bf = GPclass()
         # print(df.head())
-        bf.ccrm("betweenness", df.values, VERBOSE=False)
+        bf.ccrm("eigenvector", df.values, VERBOSE=False)
         nodes = list(bf.graph.nodes)
         print(nodes)
         msbs = df.iloc[nodes, :]
