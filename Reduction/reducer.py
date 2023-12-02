@@ -2,10 +2,10 @@ from umap import UMAP
 import pandas as pd
 import os
 import copy
-
+############################# this file processed all feature subsets, computes the UMAP 2-D representation and stores them
 if __name__ == "__main__":
     # df = pd.read_csv('./../Dataset/scaledData.csv')
-    base = './../Dataset'
+    base = './../Dataset/umap reduced'
     files = [f for f in os.listdir(base) if f[0] == 'v']
     for f in files:
         df = pd.read_csv(os.path.join(base, f))

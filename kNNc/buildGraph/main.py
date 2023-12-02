@@ -4,6 +4,8 @@ import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
 
+############ THE PURPOSE OF THE SCRIPT IS TO BUILD THE FOLDERS FOR THE REDUCED SUBSETS CORRESPONDING
+############ TO THE DIFFERENT CENTRALITY MEASURES
 
 if __name__ == "__main__":
     base = './../../Dataset'
