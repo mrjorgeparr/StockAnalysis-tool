@@ -24,7 +24,7 @@ class GPclass(baseBuilder):
         }
 
         centrality_values = centrality[centrality_measure](self.graph)
-        print(f"Centrality values found: {centrality_values}")
+        # print(f"Centrality values found: {centrality_values}")
         # Sort nodes by centrality measure
         sorted_nodes = sorted(centrality_values, key=centrality_values.get, reverse=True)
 
@@ -33,7 +33,7 @@ class GPclass(baseBuilder):
 
         # Initialize an empty list to store nodes to remove
         nodes_to_remove = []
-        print()
+        
         # Iterate through each class
         for target_class in np.unique(list(class_labels.values())):
             # Filter nodes belonging to the current class
@@ -49,7 +49,7 @@ class GPclass(baseBuilder):
             nodes_to_remove.extend(class_nodes[num_nodes_to_keep:])
             if VERBOSE:
                 print(f"Removed nodes class {target_class}: {class_nodes[num_nodes_to_keep:]}")
-        
+        print(f"Length: {len(nodes_to_remove)}")
         # print(len(nodes_to_remove))
         self.graph.remove_nodes_from(nodes_to_remove)
         if plot: 

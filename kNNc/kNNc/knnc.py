@@ -1,6 +1,8 @@
 # mypackage/knnc.py
 import numpy as np
 from sklearn.neighbors import NearestNeighbors, KNeighborsClassifier
+from sklearn.metrics import accuracy_score, roc_auc_score
+
 
 class kNNc:
     def __init__(self, c, k):
@@ -23,9 +25,19 @@ class kNNc:
     def predict(self, X):
         c_classes = self.get_c_classes(X)
         return self.knn_classifier.predict(X[c_classes])
+    
+    def compute_accuracy(self, X, y_true):
+        y_pred = self.predict(X)
+        return accuracy_score(y_true, y_pred)
+
+    def compute_auc(self, X, y_true):
+        y_scores = self.knn_classifier.predict_proba(X)[:, 1]  # Assuming binary classification
+        return roc_auc_score(y_true, y_scores)
+
 
 if __name__ == "__main__":
     
+    """
     # Example usage
     from sklearn.datasets import load_iris
     iris = load_iris()
@@ -35,4 +47,5 @@ if __name__ == "__main__":
     knnc.fit(X, y, subset)
     y_pred = knnc.predict(X)
     print(f"Predicted labels for X: {y_pred}")
+    """
     
