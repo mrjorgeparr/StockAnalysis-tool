@@ -8,7 +8,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 import pandas as pd
 import time 
-from datetime import datetime
 
 
 # supporting class with constants from the website (keys etc.)
@@ -147,46 +146,6 @@ def add_metrics_from_site(driver, metrics, metrics_by_label):
         #metrics.append((child_elements[0].text, child_elements[1].text))  # TODO return metric_label value (but be aware of the contains-search!)
 
     return metrics
-
-def add_dividends_from_site(driver, df_dividends, tickername):
-    
-    body_id = 'Col1-1-HistoricalDataTable-Proxy'
-
-    if len(driver.find_elements(By.ID, body_id)) == 0:
-        print("ERROR: no HistoricalDataTable page found! Returns no dividends")
-        return df_dividends #data + [None] * (len(labels_to_add) - 1) # return placeholders
-    
-    
-    #df_dividends = pd.DataFrame(columns=["Ticker", "Date", "Dividend"])
-
-    body = driver.find_element(By.ID, body_id).find_element(By.TAG_NAME, "tbody")
-    
-    rows = body.find_elements(By.TAG_NAME, "tr")
-    if len(rows) == 0:
-        print("no historic dividends found")
-        return df_dividends
-    
-    for row in rows:
-
-        row_data = [tickername]
-        child_elements = row.find_elements(By.TAG_NAME, "td")
-        
-        if len(child_elements) == 1 and "No Dividends" in child_elements[0].text:
-            # example: https://finance.yahoo.com/quote/CPRT/history?period1=1543708800&period2=1701475200&interval=capitalGain%7Cdiv%7Csplit&filter=div&frequency=1d&includeAdjustedClose=true
-            print("no historic dividends found")
-            return df_dividends
-            
-        assert(len(child_elements) == 2)
-
-        date = datetime.strptime(child_elements[0].text, '%b %d, %Y').date()
-        value = extract_value_from_format(child_elements[1].text.split(" ")[0])
-
-        row_data.append(date)
-        row_data.append(value)
-        # add metrics as new last row to df
-        df_dividends.loc[len(df_dividends)] = row_data
-
-    return df_dividends
     
 
 def get_trending_tickers_yahoo(driver):
@@ -224,12 +183,12 @@ def get_nasdaq_100_tickers():
     options.add_argument('--no-sandbox') # so that it can access machine resources, blocking sandbox processes it can access whatever
     options.add_argument('--disable-dev-shm-usage')  # colab does not have enough memory
     # open it, go to a website, and get results
-    nasdaq_driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(options=options)
 
 
     try:
         url = "https://www.nasdaq.com/market-activity/quotes/nasdaq-ndx-index"
-        nasdaq_driver.get(url)
+        driver.get(url)
 
         time.sleep(5)
         # Accept cookies by clicking the button with the specified ID
@@ -237,12 +196,12 @@ def get_nasdaq_100_tickers():
 
         print("accept cookies")
         #print(driver.page_source)
-        iframe = nasdaq_driver.find_element(By.ID, 'onetrust-banner-sdk')
+        iframe = driver.find_element(By.ID, 'onetrust-banner-sdk')
         accept_cookies_button = iframe.find_element(By.ID, 'onetrust-accept-btn-handler')
         accept_cookies_button.click()
 
         print("get nasdaq-100 tickers")
-        tab = nasdaq_driver.find_element(By.TAG_NAME, 'tbody')
+        tab = driver.find_element(By.TAG_NAME, 'tbody')
         tickers = []
         assert(tab)
         elements = tab.find_elements(By.TAG_NAME, 'tr')
@@ -258,61 +217,13 @@ def get_nasdaq_100_tickers():
         print("getting tickers finished")
     finally:
         # Close the WebDriver
-        nasdaq_driver.quit()
+        driver.quit()
 
     print()
     print("finished scraping nasdaq website")
     
     return tickers
 	
-
-def get_metrics(driver, tickers):
-    print("get metrics for "+str(len(tickers))+" tickers")
-    required_metrics = Metrics().from_slides()
-    
-    df_metrics = pd.DataFrame(columns=[get_key_from_metric_label(label) for label in required_metrics])
-    
-    # call metric-webpage for each ticker and scrape values
-    for ticker in tickers:
-            
-        tickername = ticker.name
-        print()
-        print("ticker: ", tickername)
-        url = "https://finance.yahoo.com/quote/"+tickername+"/key-statistics?p="+tickername
-        driver.get(url)
-
-        metrics = [tickername]
-         # get metric values from website
-        print("start scraping metrics for ticker from: ", driver.current_url)
-        metrics = add_metrics_from_site(driver, metrics, required_metrics)
-
-         # add metrics as new last row to df
-        df_metrics.loc[len(df_metrics)] = metrics
-
-    #print(df_metrics)
-    return df_metrics
-
-def get_dividends(driver, tickers):
-    
-    df_dividends = pd.DataFrame(columns=["Ticker", "Date", "Dividend"])
-    
-    # call metric-webpage for each ticker and scrape values
-    for ticker in tickers:
-            
-        tickername = ticker.name
-        print()
-        print("ticker: ", tickername)
-        history_url = "https://finance.yahoo.com/quote/"+tickername+"/history?period1=1543708800&period2=1701475200&interval=capitalGain%7Cdiv%7Csplit&filter=div&frequency=1d&includeAdjustedClose=true"
-        driver.get(history_url)
-
-         # get dividend values from website
-        print("start dividend values for ticker from: ", driver.current_url)
-        df_dividends = add_dividends_from_site(driver, df_dividends, tickername)
-
-    return df_dividends
-
-
-
 # -----------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------ MAIN -----------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------------------------------------------
@@ -334,21 +245,35 @@ try:
     iframe = driver.find_element(By.CLASS_NAME, 'con-wizard')
     accept_cookies_button = iframe.find_element(By.CLASS_NAME, 'accept-all')
     accept_cookies_button.click()
-
-
-
+    
     #tickers = get_trending_tickers_yahoo(driver)
     tickers = get_nasdaq_100_tickers()
     
+    print("get metrics for "+str(len(tickers))+" tickers")
+    required_metrics = Metrics().from_slides()
     
-    df_dividends = get_dividends(driver, tickers)
+    df_metrics = pd.DataFrame(columns=[get_key_from_metric_label(label) for label in required_metrics])
     
-    print()
-    print("--- results ---")
-    print(df_dividends)
-    
-    #df_metrics = get_metrics(driver, tickers)
+    # call metric-webpage for each ticker and scrape values
+    for ticker in tickers:
+        #if not ticker.name == "ES=F":
+        #    continue
+            
+        tickername = ticker.name
+        print()
+        print("ticker: ", tickername)
+        url = "https://finance.yahoo.com/quote/"+tickername+"/key-statistics?p="+tickername
+        driver.get(url)
 
+        metrics = [tickername]
+         # get metric values from website
+        print("start scraping metrics for ticker from: ", driver.current_url)
+        metrics = add_metrics_from_site(driver, metrics, required_metrics)
+
+         # add metrics as new last row to df
+        df_metrics.loc[len(df_metrics)] = metrics
+
+    #print(df_metrics)
 
 finally:
     # Close the WebDriver
@@ -362,7 +287,7 @@ print("finished scraping")
 
 print("save data in csv")
 # save to project/Dataset/data.csv
-df_dividends.to_csv('./../Dataset/data_dividends.csv')
+df_metrics.to_csv('./../Dataset/data.csv')
 
 
 
