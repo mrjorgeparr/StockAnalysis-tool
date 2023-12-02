@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a web analytics tool for scraping data from Yahoo Finance to obtain key financial features of stocks. The objective is to provide insights into stock clustering based on these features and the discretized dividend rate.
+This project is a web analytics tool for scraping data from Yahoo Finance to obtain key financial features of stocks. The objective is to provide insights into similarity based classification using prototype selection of the discretized forward annual dividend yield.
 
 
 ## Features
@@ -13,9 +13,9 @@ This project is a web analytics tool for scraping data from Yahoo Finance to obt
 
 - **Stock Clustering**: The primary objective is to cluster stocks based on their financial features. These clusters are determined with the discretized dividend rate as the target variable.
 
-- **Dimensionality Reduction**: We employ techniques such as t-SNE (t-Distributed Stochastic Neighbor Embedding) and Autoencoders (AE) to reduce the dimensionality of the data, aiding in visualization and clustering.
+- **Dimensionality Reduction**: We employ Uniform Manifold Approximation projection in order to compute 2-d equivalents of our datasets preserving the topological properties of the original dataset
 
-- **Graph Theory and Bayesian Analysis**: We apply graph theory and Bayesian graph analysis to construct a reduced subset of data for K-Nearest Neighbors (KNN) classification, optimizing the speed and accuracy of predictions, based on the approach proposed in ***Improving kNN multi-label classification in Prototype Selection scenarios using class proposals***, reference:
+- **Graph Theory**: We apply graph theory and Bayesian graph analysis to construct a reduced subset of data for K-Nearest Neighbors (KNN) classification, optimizing the speed and accuracy of predictions, based on the approach proposed in ***Improving kNN multi-label classification in Prototype Selection scenarios using class proposals***, reference:
 
                           https://www.sciencedirect.com/science/article/pii/S0031320314004853
 ## Financial Features
@@ -61,4 +61,5 @@ The data gathering process involved two steps,
 
 ### Dimensionality reduction
 
-To produce a scatter plot, a dimensionality reduction scheme is needed, t-SNE (t-stochastic neighbour embedding) suffices if no inference is to be made on reduced set. Once we obtain it, produce interactive scatter plot. We will also consider topological dimensionality reduction techniques such as UMAP.
+To produce a scatter plot, a dimensionality reduction scheme is needed, we employed UMAP for as it is faster than TSNE and we are interested in the preservation of the topology of the dataset.
+
