@@ -11,7 +11,7 @@ class UMAPplot:
         self.n_comp = n_comp
         self.selected_features = None  # Store selected features for printing
         assert n_comp in [2, 3], "invalid number of components"
-        self.umodel = umap.UMAP(n_components=n_comp)
+        self.umodel = umap.UMAP(n_components=n_comp, random_state=42, n_jobs=1)
         self.umres = self.umodel.fit_transform(self.data)
         
         if applyKernel:
@@ -37,6 +37,7 @@ class UMAPplot:
             raise ValueError("Invalid number of components for plotting")
 
 if __name__ == "__main__":
+    
     df = pd.read_csv('./../Dataset/scaledData.csv')
     """
 
@@ -55,6 +56,7 @@ if __name__ == "__main__":
     umap_plotter = UMAPplot(features=X_imputed, labels=df[target], n_comp=2, applyKernel=True)
     umap_plotter.plot()
     plt.show()
+    
     ################################# TO STUDY FEATURE SUBSETS WITH BETTER SEPARATION ##################################################
     """
     df.drop(['Unnamed: 0', 'Unnamed: 0.1'], axis=1, inplace=True)

@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 
 if __name__ == "__main__":
     base = './../../Dataset'
-    tosave = os.path.join(base, 'meaningfulSetsd')
+    tosave = os.path.join(base, 'meaningfulSetsp')
     os.makedirs(tosave)
     target = 'discretized FADY'
     files = [f for f in os.listdir(os.path.join(base, 'umap reduced'))]
@@ -23,7 +23,7 @@ if __name__ == "__main__":
         X = df.drop(target, axis=1)
         # this is the equivalent of a test train split, because we know there are 83 samples in our dataset
         df = df.iloc[:66,:]
-        bf.ccrm("degree", df.values, VERBOSE=False)
+        bf.ccrm("page_rank", df.values, VERBOSE=False)
         nodes = list(bf.graph.nodes)
         msbs = df.iloc[nodes, :]
         msbs.to_csv(os.path.join(tosave, 'r'+f))
