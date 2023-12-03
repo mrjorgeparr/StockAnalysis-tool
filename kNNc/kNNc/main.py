@@ -22,6 +22,7 @@ if __name__ == "__main__":
     target = 'discretized FADY'
     maxacc = 0
     bestparams = ''
+    bestfet = ''
     for n in dsNames:
         sbst = pd.read_csv(os.path.join(subst, 'r' + n))
         zet = pd.read_csv(os.path.join(full, n))
@@ -67,11 +68,13 @@ if __name__ == "__main__":
                 if acc > maxacc:
                     maxacc = acc
                     bestparams = params
+                    bestfet=n
                 print(f"Accuracy: {acc}")
                 # print(f"AUC: {knnc.compute_auc(X_test, y_test)}")
 
     print('\nBest accuracy and parameters found\n')
     print(f"{maxacc}")
     print(bestparams)
+    print(bestfet)
 
             
