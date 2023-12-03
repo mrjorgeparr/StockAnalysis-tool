@@ -9,10 +9,16 @@ from sklearn.preprocessing import StandardScaler
 # Set the warning filter to "ignore" to suppress all warnings
 warnings.filterwarnings("ignore")
 
+# for betweenness : best accuracy .75, (k,c) = 6,4, uv26.csv
+# for degree: best accuracy: .8125 (k,c) = 3,2 uv9.csv
+# for closeness: best accuracy: .8125 for (k,c) = 3,2 uv9.csv
+# eigenvector: 0.75, (k,c) = 6,4, best feature set is uv26.csv
+# for page rank: 0.75 (k, c) = 6,4 uv26.csv
+
 
 if __name__ == "__main__":
     ROOT = './../../Dataset'
-    subst = os.path.join(ROOT, 'meaningfulSetsd')
+    subst = os.path.join(ROOT, 'meaningfulSetsp')
     full = os.path.join(ROOT, 'umap reduced')
 
     dsNames= [f for f in os.listdir(full)]
@@ -52,11 +58,10 @@ if __name__ == "__main__":
 
         cvals = range(2,5)
         for c in cvals:
-            for k in range(c,c+4):
+            for k in range(c+1,c+4):
                 params = f"Parameters (k,c): {k}, {c}"
                 print(params)
                 knnc = kNNc(c=c, k=k)
-                
                 #print(X_train)
                 #print(sbst.head())
                 # print(sbst.columns)
@@ -65,7 +70,8 @@ if __name__ == "__main__":
                 # print('\n')
                 y_pred = knnc.predict(X_test)
                 acc = knnc.compute_accuracy(y_pred, y_test)
-                if acc > maxacc:
+                if acc >= maxacc:
+                    # print('in')
                     maxacc = acc
                     bestparams = params
                     bestfet=n
