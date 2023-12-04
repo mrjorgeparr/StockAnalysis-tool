@@ -1,6 +1,9 @@
 from UMAPplot import UMAPplot
 import pandas as pd
 import matplotlib.pyplot as plt
+from mlxtend.plotting import plot_decision_regions
+from sklearn.neighbors import KNeighborsClassifier
+import numpy as np
 
 
 if __name__ == "__main__":
@@ -34,8 +37,14 @@ if __name__ == "__main__":
         from sklearn.impute import SimpleImputer
         imputer = SimpleImputer(strategy='mean')
         X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
-
+    
         ump = UMAPplot(X_imputed, y,2, applyKernel=False)
         ump.plot()
+        plt.show()
+        
+        # to get the visualizations of the Voronoi regions as well
+        knn = KNeighborsClassifier(n_neighbors=1)
+        knn.fit(ump.umres, y)
+        plot_decision_regions(np.array(ump.umres), np.array(y), clf=knn, legend=2)
         plt.show()
     

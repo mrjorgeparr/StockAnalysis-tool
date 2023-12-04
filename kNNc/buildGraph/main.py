@@ -14,7 +14,6 @@ if __name__ == "__main__":
     target = 'discretized FADY'
     files = [f for f in os.listdir(os.path.join(base, 'umap reduced'))]
     print(files)
-    
     for f in files:
         df = pd.read_csv(os.path.join(base, 'umap reduced', f))
         # splitting because the reduced subset should only be composed out of the training
