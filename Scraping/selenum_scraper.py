@@ -148,13 +148,14 @@ def add_metrics_from_site(driver, metrics, metrics_by_label):
 
     return metrics
 
-def add_dividends_from_site(driver, df_dividends, tickername):
-    
+
+
+def extract_table_rows_from_history_view(driver):
     body_id = 'Col1-1-HistoricalDataTable-Proxy'
 
     if len(driver.find_elements(By.ID, body_id)) == 0:
-        print("ERROR: no HistoricalDataTable page found! Returns no dividends")
-        return df_dividends #data + [None] * (len(labels_to_add) - 1) # return placeholders
+        print("ERROR: no HistoricalDataTable page found! Returns no data for current ticker")
+        return None
     
     
     #df_dividends = pd.DataFrame(columns=["Ticker", "Date", "Dividend"])
@@ -163,7 +164,15 @@ def add_dividends_from_site(driver, df_dividends, tickername):
     
     rows = body.find_elements(By.TAG_NAME, "tr")
     if len(rows) == 0:
-        print("no historic dividends found")
+        print("no historic data for current ticker found")
+        return None
+    
+    return rows
+
+def add_dividends_from_site(driver, df_dividends, tickername):
+    
+    rows = extract_table_rows_from_history_view(driver)
+    if not rows:
         return df_dividends
     
     for row in rows:
@@ -187,7 +196,40 @@ def add_dividends_from_site(driver, df_dividends, tickername):
         df_dividends.loc[len(df_dividends)] = row_data
 
     return df_dividends
+
+
+def add_historic_stock_values_from_site(driver, df_historic_stock_values, tickername):
     
+    rows = extract_table_rows_from_history_view(driver)
+    if not rows:
+        return df_historic_stock_values
+    
+    print("number of extracted table rows: ", len(rows))
+    for row in rows:
+
+        row_data = [tickername]
+        child_elements = row.find_elements(By.TAG_NAME, "td")
+        
+        if len(child_elements) <= 2:
+            # filter dividend-rows
+            continue
+            
+        assert(len(child_elements) == 7)
+
+        date = datetime.strptime(child_elements[0].text, '%b %d, %Y').date()
+        open_value = extract_value_from_format(child_elements[1].text)
+        close_value = extract_value_from_format(child_elements[4].text)
+
+        row_data.append(date)
+        row_data.append(open_value)
+        row_data.append(close_value)
+
+        # add metrics as new last row to df
+        df_historic_stock_values.loc[len(df_historic_stock_values)] = row_data
+
+    return df_historic_stock_values
+
+
 
 def get_trending_tickers_yahoo(driver):
     print("call trending tickers")
@@ -312,6 +354,26 @@ def get_dividends(driver, tickers):
     return df_dividends
 
 
+def get_historic_stock_values(driver, tickers):
+    
+    df_historic_stocks = pd.DataFrame(columns=["Ticker", "Date", "Open", "Close"])
+    
+    # call metric-webpage for each ticker and scrape values
+    for ticker in tickers:
+            
+        tickername = ticker.name
+        print()
+        print("ticker: ", tickername)
+        history_url = "https://finance.yahoo.com/quote/"+tickername+"/history?period1=1670371200&period2=1701907200&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true" # just 1 year
+        driver.get(history_url)
+
+         # get dividend values from website
+        print("start historic stock values for ticker from: ", driver.current_url)
+        df_historic_stocks = add_historic_stock_values_from_site(driver, df_historic_stocks, tickername)
+
+    return df_historic_stocks
+
+
 
 # -----------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------ MAIN -----------------------------------------------------------------------------------
@@ -342,10 +404,11 @@ try:
     
     
     df_dividends = get_dividends(driver, tickers)
+    #df_historic_stock = get_historic_stock_values(driver, tickers)
     
     print()
     print("--- results ---")
-    print(df_dividends)
+    print(df_historic_stock)
     
     #df_metrics = get_metrics(driver, tickers)
 
@@ -363,6 +426,7 @@ print("finished scraping")
 print("save data in csv")
 # save to project/Dataset/data.csv
 df_dividends.to_csv('./../Dataset/data_dividends.csv')
+#df_historic_stock.to_csv('./../Dataset/data_historic_stock.csv')
 
 
 
