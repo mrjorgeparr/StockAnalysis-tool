@@ -403,15 +403,14 @@ try:
     tickers = get_nasdaq_100_tickers()
     
     
-    df_dividends = get_dividends(driver, tickers)
-    #df_historic_stock = get_historic_stock_values(driver, tickers)
+    #df = get_metrics(driver, tickers)
+    df = get_dividends(driver, tickers)
+    #df = get_historic_stock_values(driver, tickers)
     
     print()
     print("--- results ---")
-    print(df_historic_stock)
+    print(df)
     
-    #df_metrics = get_metrics(driver, tickers)
-
 
 finally:
     # Close the WebDriver
@@ -425,8 +424,9 @@ print("finished scraping")
 
 print("save data in csv")
 # save to project/Dataset/data.csv
-df_dividends.to_csv('./../Dataset/data_dividends.csv')
-#df_historic_stock.to_csv('./../Dataset/data_historic_stock.csv')
+df.to_csv('./../Dataset/data_tmp.csv')  #data_historic_stock  #data_dividends
+
+
 
 
 
