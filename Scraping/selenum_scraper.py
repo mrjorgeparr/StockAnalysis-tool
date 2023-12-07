@@ -312,6 +312,66 @@ def get_nasdaq_100_tickers():
     return tickers
 	
 
+
+def get_nasdaq_100_tickers_wikipedia():
+    # get nasdaq-100 tickers from
+    # https://www.nasdaq.com/market-activity/quotes/nasdaq-ndx-index
+
+    print("set up driver for wikipedia")
+    from selenium.webdriver.support.wait import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+
+    options = webdriver.ChromeOptions()
+    #options.add_argument('--headless') # for not displaying the graphical environment, shows virtualized browser without GUI
+    options.add_argument('--no-sandbox') # so that it can access machine resources, blocking sandbox processes it can access whatever
+    options.add_argument('--disable-dev-shm-usage')  # colab does not have enough memory
+    # open it, go to a website, and get results
+    wikipedia_driver = webdriver.Chrome(options=options)
+
+
+    try:
+        url = "https://en.wikipedia.org/wiki/Nasdaq-100"
+        wikipedia_driver.get(url)
+
+        time.sleep(2)
+        # Accept cookies by clicking the button with the specified ID
+        #iframe = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'onetrust-banner-sdk')))
+
+        #print("accept cookies")
+        #print(driver.page_source)
+        #iframe = nasdaq_driver.find_element(By.ID, 'onetrust-banner-sdk')
+        #accept_cookies_button = iframe.find_element(By.ID, 'onetrust-accept-btn-handler')
+        #accept_cookies_button.click()
+
+        print("get nasdaq-100 tickers")
+        table = wikipedia_driver.find_element(By.ID, 'constituents')
+        tab = table.find_element(By.TAG_NAME, 'tbody')
+        tickers = []
+        assert(tab)
+        elements = tab.find_elements(By.TAG_NAME, 'tr')
+
+        print("amount of tickers: ", len(elements))
+        #elements = elements[:5]  # TODO, take all tickers (only for testing)
+
+        #links = [e.find_element(By.TAG_NAME, 'a') for e in elements]
+
+        for row in elements:
+            child_elements = row.find_elements(By.XPATH, "./*") # get columns
+
+            tickers.append(Tickerinfo(child_elements[1].text, None))
+
+        print("getting tickers finished")
+    finally:
+        # Close the WebDriver
+        wikipedia_driver.quit()
+
+    print()
+    print("finished scraping wikipedia")
+    
+    return tickers
+	
+
+
 def get_metrics(driver, tickers):
     print("get metrics for "+str(len(tickers))+" tickers")
     required_metrics = Metrics().from_slides()
@@ -404,12 +464,12 @@ try:
 
 
     #tickers = get_trending_tickers_yahoo(driver)
-    tickers = get_nasdaq_100_tickers()
-    
+    #tickers = get_nasdaq_100_tickers()
+    tickers = get_nasdaq_100_tickers_wikipedia()
     
     #df = get_metrics(driver, tickers)
-    #df = get_dividends(driver, tickers)
-    df = get_historic_stock_values(driver, tickers)
+    df = get_dividends(driver, tickers)
+    #df = get_historic_stock_values(driver, tickers)
     
     print()
     print("--- results ---")
@@ -428,7 +488,7 @@ print("finished scraping")
 
 print("save data in csv")
 # save to project/Dataset/data.csv
-df.to_csv('./../Dataset/data_historic_stock.csv', index=False) # data_tmp  #data_historic_stock  #data_dividends
+df.to_csv('./../Dataset/data_dividends.csv', index=False) # data_tmp  #data_historic_stock  #data_dividends
 
 
 
