@@ -218,10 +218,14 @@ def add_historic_stock_values_from_site(driver, df_historic_stock_values, ticker
 
         date = datetime.strptime(child_elements[0].text, '%b %d, %Y').date()
         open_value = extract_value_from_format(child_elements[1].text)
+        high_value = extract_value_from_format(child_elements[2].text)
+        low_value = extract_value_from_format(child_elements[3].text)
         close_value = extract_value_from_format(child_elements[4].text)
 
         row_data.append(date)
         row_data.append(open_value)
+        row_data.append(high_value)
+        row_data.append(low_value)
         row_data.append(close_value)
 
         # add metrics as new last row to df
@@ -356,7 +360,7 @@ def get_dividends(driver, tickers):
 
 def get_historic_stock_values(driver, tickers):
     
-    df_historic_stocks = pd.DataFrame(columns=["Ticker", "Date", "Open", "Close"])
+    df_historic_stocks = pd.DataFrame(columns=["Ticker", "Date", "Open", "High", "Low", "Close"])
     
     # call metric-webpage for each ticker and scrape values
     for ticker in tickers:
@@ -404,8 +408,8 @@ try:
     
     
     #df = get_metrics(driver, tickers)
-    df = get_dividends(driver, tickers)
-    #df = get_historic_stock_values(driver, tickers)
+    #df = get_dividends(driver, tickers)
+    df = get_historic_stock_values(driver, tickers)
     
     print()
     print("--- results ---")
@@ -424,7 +428,7 @@ print("finished scraping")
 
 print("save data in csv")
 # save to project/Dataset/data.csv
-df.to_csv('./../Dataset/data_tmp.csv')  #data_historic_stock  #data_dividends
+df.to_csv('./../Dataset/data_historic_stock.csv', index=False) # data_tmp  #data_historic_stock  #data_dividends
 
 
 
