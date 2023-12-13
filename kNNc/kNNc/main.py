@@ -18,9 +18,10 @@ warnings.filterwarnings("ignore")
 
 if __name__ == "__main__":
     ROOT = './../../Dataset'
-    subst = os.path.join(ROOT, 'meaningfulSetsp')
+    letter = 'd'
+    subst = os.path.join(ROOT, 'meaningfulSets'+ letter)
     full = os.path.join(ROOT, 'umap reduced')
-
+    predicted = './../../Predictions'
     dsNames= [f for f in os.listdir(full)]
     # redNames = [f for f in os.listdir(subst)]
     # print(f"Dataset names: {dsNames}")
@@ -33,13 +34,13 @@ if __name__ == "__main__":
         sbst = pd.read_csv(os.path.join(subst, 'r' + n))
         zet = pd.read_csv(os.path.join(full, n))
         features = ['Umap 1', 'Umap 2', 'discretized FADY']
-        print(f"File name: {n}")
+        print(f"\nFile name: {n}\n")
         zet = zet[features]
         sbst = sbst[features]
         scaler = StandardScaler()
         # following the same train test split as for constructing the subsets
-        traindf = zet.iloc[:66,:]
-        testdf = zet.iloc[67:,:]
+        traindf = zet.iloc[:80,:]
+        testdf = zet.iloc[81:,:]
         y_train = traindf[target]
         X_train = traindf.drop(target, axis=1)
         y_test = testdf[target]
@@ -75,6 +76,8 @@ if __name__ == "__main__":
                     maxacc = acc
                     bestparams = params
                     bestfet=n
+                    predf = pd.DataFrame(y_pred, columns=['Predictions'])
+                    predf.to_csv(os.path.join(predicted, letter + n))
                 print(f"Accuracy: {acc}")
                 # print(f"AUC: {knnc.compute_auc(X_test, y_test)}")
 

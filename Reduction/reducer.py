@@ -6,9 +6,10 @@ import copy
 if __name__ == "__main__":
     # df = pd.read_csv('./../Dataset/scaledData.csv')
     base = './../Dataset/umap reduced'
-    files = [f for f in os.listdir(base) if f[0] == 'v']
+    READ = './../Dataset'
+    files = [f for f in os.listdir(READ) if f[0] == 'v']
     for f in files:
-        df = pd.read_csv(os.path.join(base, f))
+        df = pd.read_csv(os.path.join(READ, f))
         ump = UMAP(n_components=2, random_state=42, n_jobs=1)
         df2 = df.copy()
         df2.drop('discretized FADY', axis=1)
