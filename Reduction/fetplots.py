@@ -61,12 +61,14 @@ if __name__ == "__main__":
         df2 = pd.DataFrame(ump.umres, columns=['UMAP 1', 'UMAP 2'])
         df2[target] = y
         df2.to_csv('./../Dataset/umap reduced/Uv'+str(b)+'.csv')
-        #ump.plot()
-        #plt.show()
+        if b == 21:
+            #ump.plot()
+            #plt.show()
 
+            
+            knn = KNeighborsClassifier(n_neighbors=1)
+            knn.fit(ump.umres, y)
+            plot_decision_regions(np.array(ump.umres), np.array(y), clf=knn, legend=2)
+            plt.show()
         """
-        knn = KNeighborsClassifier(n_neighbors=1)
-        knn.fit(ump.umres, y)
-        plot_decision_regions(np.array(ump.umres), np.array(y), clf=knn, legend=2)
-        plt.show()
         """

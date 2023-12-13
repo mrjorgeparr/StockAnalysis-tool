@@ -18,7 +18,7 @@ warnings.filterwarnings("ignore")
 
 if __name__ == "__main__":
     ROOT = './../../Dataset'
-    letter = 'p'
+    letter = 'd'
     subst = os.path.join(ROOT, 'meaningfulSets'+ letter)
     full = os.path.join(ROOT, 'umap reduced')
     predicted = './../../Predictions'
