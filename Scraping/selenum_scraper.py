@@ -445,7 +445,7 @@ def get_historic_stock_values(driver, tickers):
         tickername = ticker.name
         print()
         print("ticker: ", tickername)
-        history_url = "https://finance.yahoo.com/quote/"+tickername+"/history?period1=1670371200&period2=1701907200&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true" # just 1 year
+        history_url = "https://finance.yahoo.com/quote/"+tickername+"/history?period1=1694563200&period2=1702425600&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true" # just 1 year
         driver.get(history_url)
 
          # get dividend values from website
@@ -484,9 +484,9 @@ try:
     #tickers = get_nasdaq_100_tickers()
     tickers = get_nasdaq_100_tickers_wikipedia()    #[:5]
 
-    df = get_metrics(driver, tickers)
+    #df = get_metrics(driver, tickers)
     #df = get_dividends(driver, tickers)
-    #df = get_historic_stock_values(driver, tickers)
+    df = get_historic_stock_values(driver, tickers)
     
     print()
     print("--- results ---")
@@ -505,7 +505,7 @@ print("finished scraping")
 
 print("save data in csv")
 # save to project/Dataset/data.csv
-df.to_csv('./../Dataset/data_tmp.csv', index=False) # data_tmp  #data_historic_stock  #data_dividends
+df.to_csv('./../Dataset/data_historic_tmp.csv', index=False) # data_tmp  #data_historic_stock  #data_dividends
 
 
 
