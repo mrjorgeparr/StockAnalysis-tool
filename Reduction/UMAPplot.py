@@ -60,8 +60,8 @@ if __name__ == "__main__":
     ################################# TO STUDY FEATURE SUBSETS WITH BETTER SEPARATION ##################################################
     """
     
-    """
-    df.drop(['Unnamed: 0', 'Unnamed: 0.1'], axis=1, inplace=True)
+    
+    df.drop(['Unnamed: 0'], axis=1, inplace=True)
     target = 'discretized FADY'
     target = df.columns.tolist()[-1]
     y = df[target]
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     df2['discretized FADY'] = pd.cut(df2[target], bins=n_bins, labels=False)
     df2.drop(target, axis=1, inplace=True)
     df2.to_csv('./../Dataset/scaledData.csv')
-    
+    """
     
 
 
