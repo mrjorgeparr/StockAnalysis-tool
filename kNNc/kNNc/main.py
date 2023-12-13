@@ -18,7 +18,7 @@ warnings.filterwarnings("ignore")
 
 if __name__ == "__main__":
     ROOT = './../../Dataset'
-    letter = 'd'
+    letter = 'p'
     subst = os.path.join(ROOT, 'meaningfulSets'+ letter)
     full = os.path.join(ROOT, 'umap reduced')
     predicted = './../../Predictions'
@@ -28,12 +28,13 @@ if __name__ == "__main__":
     # print(f"Reduced subset names: {redNames}")
     target = 'discretized FADY'
     maxacc = 0
+    worstacc = 999
     bestparams = ''
     bestfet = ''
     for n in dsNames:
         sbst = pd.read_csv(os.path.join(subst, 'r' + n))
         zet = pd.read_csv(os.path.join(full, n))
-        features = ['Umap 1', 'Umap 2', 'discretized FADY']
+        features = ['UMAP 1', 'UMAP 2', 'discretized FADY']
         print(f"\nFile name: {n}\n")
         zet = zet[features]
         sbst = sbst[features]
@@ -79,11 +80,14 @@ if __name__ == "__main__":
                     predf = pd.DataFrame(y_pred, columns=['Predictions'])
                     predf.to_csv(os.path.join(predicted, letter + n))
                 print(f"Accuracy: {acc}")
+                if acc < worstacc:
+                    worstacc = acc
                 # print(f"AUC: {knnc.compute_auc(X_test, y_test)}")
 
     print('\nBest accuracy and parameters found\n')
     print(f"{maxacc}")
     print(bestparams)
     print(bestfet)
+    print('\nWorst accuracy: ', worstacc)
 
             
