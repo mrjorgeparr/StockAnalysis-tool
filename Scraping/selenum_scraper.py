@@ -53,6 +53,8 @@ class Metrics(object):
     TICKER = "Ticker"
     TICKER_SECTOR = "Sector"
     
+    STOCK_PRICE = "Stock_Price"
+
     
     def __init__(self):
         self.base = [self.TICKER, self.TICKER_SECTOR]
@@ -84,9 +86,12 @@ class Metrics(object):
             return self.base + [self.TDE, self.OCF, self.LFCF]
         else:
             return [self.TDE, self.OCF, self.LFCF]
+        
+    def tree_map_metrics(self):
+        return [self.STOCK_PRICE, self.MARKET_CAP]
     
     def from_slides(self):
-        return self.dividends_slides(addBase=True) + self.stability_slides()
+        return self.dividends_slides(addBase=True) + self.stability_slides() + self.tree_map_metrics()
     
     
 
@@ -120,7 +125,7 @@ def extract_value_from_format(input):
 
     return value
 
-def add_metrics_from_site(driver, metrics, metrics_by_label):
+def add_metrics_from_site(driver, metrics, metrics_by_label, tickername):
     
     if len(driver.find_elements(By.ID, 'Col1-0-KeyStatistics-Proxy')) == 0:
         print("ERROR: no key-statistics page found! Returns empty metrics")
@@ -132,24 +137,28 @@ def add_metrics_from_site(driver, metrics, metrics_by_label):
     for metric_label in metrics_by_label:
         if metric_label in Metrics().get_base_tickers(): # tickername only for dataframe-label reasons. Maybe change logic to more sothisticated list 
             continue
-            
-        market_cap_element = metrics_body.find_element(By.XPATH, "//tr[contains(., '"+metric_label+"')]")
-        child_elements = market_cap_element.find_elements(By.XPATH, "./*")
 
-        assert(len(child_elements) == 2)
+        if metric_label == "Stock_Price":   # scrap the current live stock price (not in table, but on top)
+            #print(driver.page_source)
+
+            ticker_header = driver.find_element(By.ID, 'quote-header-info')
+            current_stock_price = ticker_header.find_elements(By.XPATH, "//fin-streamer[@data-field = 'regularMarketPrice' and @data-symbol='"+tickername+"']")
+            assert(1 == len(current_stock_price))
+            value = extract_value_from_format(current_stock_price[0].text)
+
+        else:
+            # default path
+            market_cap_element = metrics_body.find_element(By.XPATH, "//tr[contains(., '"+metric_label+"')]")
+            child_elements = market_cap_element.find_elements(By.XPATH, "./*")
+
+            assert(len(child_elements) == 2)
         
-        # extract values from format
-        value = extract_value_from_format(child_elements[1].text) 
+            # extract values from format
+            value = extract_value_from_format(child_elements[1].text) 
+        
+        
         metrics.append(value)
         
-        # TODO!
-        #if get_key_from_metric_label(child_elements[0].text) != metric_label:
-        #    print("Caution: modified metric-name from website " + get_key_from_metric_label(child_elements[0].text) + " differs from the used column-key: "+ metric_label )
-        
-        
-        #metrics[get_key_from_metric_label(child_elements[0].text)] = child_elements[1].text
-        #metrics.append((child_elements[0].text, child_elements[1].text))  # TODO return metric_label value (but be aware of the contains-search!)
-
     return metrics
 
 
@@ -397,7 +406,7 @@ def get_metrics(driver, tickers):
         row_data = [tickername, ticker.sector]
          # get metric values from website
         print("start scraping metrics for ticker from: ", driver.current_url)
-        row_data = add_metrics_from_site(driver, row_data, required_metrics)
+        row_data = add_metrics_from_site(driver, row_data, required_metrics, tickername=tickername)
 
         #print(row_data)
          # add metrics as new last row to df
@@ -473,7 +482,7 @@ try:
 
     #tickers = get_trending_tickers_yahoo(driver)
     #tickers = get_nasdaq_100_tickers()
-    tickers = get_nasdaq_100_tickers_wikipedia()
+    tickers = get_nasdaq_100_tickers_wikipedia()    #[:5]
 
     df = get_metrics(driver, tickers)
     #df = get_dividends(driver, tickers)
@@ -496,7 +505,7 @@ print("finished scraping")
 
 print("save data in csv")
 # save to project/Dataset/data.csv
-df.to_csv('./../Dataset/data.csv', index=False) # data_tmp  #data_historic_stock  #data_dividends
+df.to_csv('./../Dataset/data_tmp.csv', index=False) # data_tmp  #data_historic_stock  #data_dividends
 
 
 
