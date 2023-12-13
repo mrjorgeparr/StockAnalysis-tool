@@ -51,10 +51,14 @@ class Metrics(object):
     
     base = []
     TICKER = "Ticker"
+    TICKER_SECTOR = "Sector"
     
     
     def __init__(self):
-        self.base = [self.TICKER]
+        self.base = [self.TICKER, self.TICKER_SECTOR]
+    
+    def get_base_tickers(self):
+        return self.base
     
     def basics(self, addBase=False):
         if addBase:
@@ -88,9 +92,9 @@ class Metrics(object):
 
 class Tickerinfo(object):  # for additional type security
     
-    def __init__(self, name, url):
+    def __init__(self, name, sector):
         self.name = name
-        self.url = url
+        self.sector = sector
         
 
 
@@ -126,7 +130,7 @@ def add_metrics_from_site(driver, metrics, metrics_by_label):
     metrics_body = driver.find_element(By.ID, 'Col1-0-KeyStatistics-Proxy')
     
     for metric_label in metrics_by_label:
-        if metric_label == Metrics.TICKER: # tickername only for dataframe-label reasons. Maybe change logic to more sothisticated list 
+        if metric_label in Metrics().get_base_tickers(): # tickername only for dataframe-label reasons. Maybe change logic to more sothisticated list 
             continue
             
         market_cap_element = metrics_body.find_element(By.XPATH, "//tr[contains(., '"+metric_label+"')]")
@@ -252,7 +256,7 @@ def get_trending_tickers_yahoo(driver):
     links = [e.find_element(By.TAG_NAME, 'a') for e in elements]
 
     for l in links:
-        tickers.append(Tickerinfo(l.text, l.get_attribute("href")))
+        tickers.append(Tickerinfo(l.text, None))
     
     print("getting tickers finished")
     return tickers
@@ -299,7 +303,7 @@ def get_nasdaq_100_tickers():
         links = [e.find_element(By.TAG_NAME, 'a') for e in elements]
 
         for l in links:
-            tickers.append(Tickerinfo(l.text, l.get_attribute("href")))
+            tickers.append(Tickerinfo(l.text, None))
 
         print("getting tickers finished")
     finally:
@@ -358,7 +362,7 @@ def get_nasdaq_100_tickers_wikipedia():
         for row in elements:
             child_elements = row.find_elements(By.XPATH, "./*") # get columns
 
-            tickers.append(Tickerinfo(child_elements[1].text, None))
+            tickers.append(Tickerinfo(child_elements[1].text, child_elements[2].text))
 
         print("getting tickers finished")
     finally:
@@ -381,19 +385,23 @@ def get_metrics(driver, tickers):
     # call metric-webpage for each ticker and scrape values
     for ticker in tickers:
             
+        #if not ticker.name == "FTNT":
+        #    continue
+
         tickername = ticker.name
         print()
         print("ticker: ", tickername)
         url = "https://finance.yahoo.com/quote/"+tickername+"/key-statistics?p="+tickername
         driver.get(url)
 
-        metrics = [tickername]
+        row_data = [tickername, ticker.sector]
          # get metric values from website
         print("start scraping metrics for ticker from: ", driver.current_url)
-        metrics = add_metrics_from_site(driver, metrics, required_metrics)
+        row_data = add_metrics_from_site(driver, row_data, required_metrics)
 
+        #print(row_data)
          # add metrics as new last row to df
-        df_metrics.loc[len(df_metrics)] = metrics
+        df_metrics.loc[len(df_metrics)] = row_data
 
     #print(df_metrics)
     return df_metrics
@@ -466,9 +474,9 @@ try:
     #tickers = get_trending_tickers_yahoo(driver)
     #tickers = get_nasdaq_100_tickers()
     tickers = get_nasdaq_100_tickers_wikipedia()
-    
-    #df = get_metrics(driver, tickers)
-    df = get_dividends(driver, tickers)
+
+    df = get_metrics(driver, tickers)
+    #df = get_dividends(driver, tickers)
     #df = get_historic_stock_values(driver, tickers)
     
     print()
@@ -488,7 +496,7 @@ print("finished scraping")
 
 print("save data in csv")
 # save to project/Dataset/data.csv
-df.to_csv('./../Dataset/data_dividends.csv', index=False) # data_tmp  #data_historic_stock  #data_dividends
+df.to_csv('./../Dataset/data.csv', index=False) # data_tmp  #data_historic_stock  #data_dividends
 
 
 
