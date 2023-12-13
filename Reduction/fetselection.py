@@ -24,7 +24,7 @@ if __name__ == "__main__":
     fet26 = ['Return_on_Equity', 'Trailing_Annual_Dividend_Yield', 'Total_Debt/Equity_(mrq)', 'Total_Cash_(mrq)', '5_Year_Average_Dividend_Yield']
     fet28 = ['Trailing_Annual_Dividend_Yield', '5_Year_Average_Dividend_Yield', 'Total_Debt/Equity_(mrq)', 'Return_on_Equity', 'Operating_Cash_Flow']
     # print(df.columns)
-    df.drop(['Unnamed: 0', 'Unnamed: 0.1'], axis=1, inplace=True)
+    df.drop(['Ticker'], axis=1, inplace=True)
     target = 'discretized FADY'
     
     for fet in [(fet2, 2), (fet3, 3),(fet4, 4), (fet9, 9), (fet14, 14), (fet17, 17), (fet20,20), (fet21, 21), (fet22, 22), (fet25, 25), (fet26, 26), (fet28, 28)]:
@@ -39,12 +39,14 @@ if __name__ == "__main__":
         X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
     
         ump = UMAPplot(X_imputed, y,2, applyKernel=False)
-        ump.plot()
-        plt.show()
+        #ump.plot()
+        #plt.show()
         
         # to get the visualizations of the Voronoi regions as well
+        """
         knn = KNeighborsClassifier(n_neighbors=1)
         knn.fit(ump.umres, y)
         plot_decision_regions(np.array(ump.umres), np.array(y), clf=knn, legend=2)
         plt.show()
+        """
     

@@ -59,6 +59,8 @@ if __name__ == "__main__":
     
     ################################# TO STUDY FEATURE SUBSETS WITH BETTER SEPARATION ##################################################
     """
+    
+    """
     df.drop(['Unnamed: 0', 'Unnamed: 0.1'], axis=1, inplace=True)
     target = 'discretized FADY'
     target = df.columns.tolist()[-1]
@@ -97,10 +99,6 @@ if __name__ == "__main__":
     print(df.head())
     ############### SCALING DATA  AND DISCRETIZING ############
     df2 = df.copy()
-    print(df2.columns)
-    df2.drop('Ticker', axis=1, inplace=True) 
-    scaler = StandardScaler()
-    df2[df2.columns] = scaler.fit_transform(df2[df2.columns])
     df2['Ticker'] = df['Ticker']
     target = 'Forward_Annual_Dividend_Yield'
     n_bins=5
@@ -110,7 +108,7 @@ if __name__ == "__main__":
     df2['discretized FADY'] = pd.cut(df2[target], bins=n_bins, labels=False)
     df2.drop(target, axis=1, inplace=True)
     df2.to_csv('./../Dataset/scaledData.csv')
-    """
+    
     
 
 
