@@ -107,7 +107,7 @@ def get_key_from_metric_label(label):
     return label.replace(" ", "_")
 
 def extract_value_from_format(input):
-    value = None    # TODO: maybe use NaN instead!?
+    value = None
 
     input = input.replace(",","") # erase every ",", they just show the thousends: 1,234. To spilt decimals, the "." is used
     if "%" in input:
@@ -124,6 +124,7 @@ def extract_value_from_format(input):
         print("input not preprocessed: ", input)
 
     return value
+
 
 def add_metrics_from_site(driver, metrics, metrics_by_label, tickername):
     
@@ -170,9 +171,7 @@ def extract_table_rows_from_history_view(driver):
         print("ERROR: no HistoricalDataTable page found! Returns no data for current ticker")
         return None
     
-    
     #df_dividends = pd.DataFrame(columns=["Ticker", "Date", "Dividend"])
-
     body = driver.find_element(By.ID, body_id).find_element(By.TAG_NAME, "tbody")
     
     rows = body.find_elements(By.TAG_NAME, "tr")
@@ -248,6 +247,7 @@ def add_historic_stock_values_from_site(driver, df_historic_stock_values, ticker
 
 
 
+## not used anymore
 def get_trending_tickers_yahoo(driver):
     print("call trending tickers")
     # call url with tickers:
@@ -259,8 +259,6 @@ def get_trending_tickers_yahoo(driver):
     elements = tab.find_elements(By.TAG_NAME, 'tr')
     
     print("amount of tickers: ", len(elements))
-    #elements = elements[:5]  # TODO, take all tickers (only for testing)
-    
     
     links = [e.find_element(By.TAG_NAME, 'a') for e in elements]
 
@@ -290,9 +288,7 @@ def get_nasdaq_100_tickers():
         url = "https://www.nasdaq.com/market-activity/quotes/nasdaq-ndx-index"
         nasdaq_driver.get(url)
 
-        time.sleep(5)
-        # Accept cookies by clicking the button with the specified ID
-        #iframe = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'onetrust-banner-sdk')))
+        time.sleep(5) # wait for completly loaded websie
 
         print("accept cookies")
         #print(driver.page_source)
@@ -307,7 +303,6 @@ def get_nasdaq_100_tickers():
         elements = tab.find_elements(By.TAG_NAME, 'tr')
 
         print("amount of tickers: ", len(elements))
-        #elements = elements[:5]  # TODO, take all tickers (only for testing)
 
         links = [e.find_element(By.TAG_NAME, 'a') for e in elements]
 
@@ -347,8 +342,6 @@ def get_nasdaq_100_tickers_wikipedia():
         wikipedia_driver.get(url)
 
         time.sleep(2)
-        # Accept cookies by clicking the button with the specified ID
-        #iframe = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'onetrust-banner-sdk')))
 
         #print("accept cookies")
         #print(driver.page_source)
@@ -364,9 +357,6 @@ def get_nasdaq_100_tickers_wikipedia():
         elements = tab.find_elements(By.TAG_NAME, 'tr')
 
         print("amount of tickers: ", len(elements))
-        #elements = elements[:5]  # TODO, take all tickers (only for testing)
-
-        #links = [e.find_element(By.TAG_NAME, 'a') for e in elements]
 
         for row in elements:
             child_elements = row.find_elements(By.XPATH, "./*") # get columns
@@ -394,9 +384,6 @@ def get_metrics(driver, tickers):
     # call metric-webpage for each ticker and scrape values
     for ticker in tickers:
             
-        #if not ticker.name == "FTNT":
-        #    continue
-
         tickername = ticker.name
         print()
         print("ticker: ", tickername)
@@ -499,8 +486,6 @@ finally:
     
 print()
 print("finished scraping")
-
-#print(df_metrics)
 
 
 print("save data in csv")
