@@ -28,7 +28,7 @@ for idx, company in enumerate(companies):
         perc_error.append((pval-rval)/rval * 1000)        #pe = p[]
 
 
-    axes[idx].set_title(company+ ' prediction error:'+str(  round(statistics.mean(perc_error),2)) + '%')
+    axes[idx].set_title(company)#+ ' prediction error:'+str(  round(statistics.mean(perc_error),2)) + '%')
     sns.lineplot(data=df[df['Ticker'] == company], x="Date", y="Close", hue="Type",ax = axes[idx])
 fig.tight_layout()
 fig.subplots_adjust(top=0.88)
