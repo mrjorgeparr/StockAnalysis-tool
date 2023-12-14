@@ -112,17 +112,3 @@ if __name__ == "__main__":
     
 
 
-    """
-    nfet = 14
-    X, y = make_blobs(n_samples=100, centers=3, n_features=nfet, random_state=42)
-
-    # Create a DataFrame from the generated data
-    columns = [f"Feature {i+1}" for i in range(nfet)]
-    df = pd.DataFrame(X, columns=columns)
-    df['Label'] = y
-
-    # Test the UMAPplot class
-    umap_plotter = UMAPplot(features=df[columns], labels=df['Label'], n_comp=2, applyKernel=False)
-    umap_plotter.plot()
-    """
-    
