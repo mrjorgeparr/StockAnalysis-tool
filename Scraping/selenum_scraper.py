@@ -116,6 +116,8 @@ def extract_value_from_format(input):
         value = float(input.replace("M", "")) * 1000 * 1000
     elif "B" in input:
         value = float(input.replace("B", "")) * 1000 * 1000 * 1000
+    elif "T" in input:
+        value = float(input.replace("T", "")) * 1000 * 1000 * 1000 * 1000
     elif input.replace('.','',1).isdigit():
         value = float(input)
     elif "N/A" in input:
@@ -471,9 +473,9 @@ try:
     #tickers = get_nasdaq_100_tickers()
     tickers = get_nasdaq_100_tickers_wikipedia()    #[:5]
 
-    #df = get_metrics(driver, tickers)
+    df = get_metrics(driver, tickers)
     #df = get_dividends(driver, tickers)
-    df = get_historic_stock_values(driver, tickers)
+    #df = get_historic_stock_values(driver, tickers)
     
     print()
     print("--- results ---")
@@ -490,7 +492,7 @@ print("finished scraping")
 
 print("save data in csv")
 # save to project/Dataset/data.csv
-df.to_csv('./../Dataset/data_historic_tmp.csv', index=False) # data_tmp  #data_historic_stock  #data_dividends
+df.to_csv('./../Dataset/data_historic_tmp_2.csv', index=False) # data_tmp  #data_historic_stock  #data_dividends
 
 
 
