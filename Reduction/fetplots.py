@@ -46,9 +46,15 @@ if __name__ == "__main__":
 
     imputer = KNN()
     target = 'discretized FADY'
-    df.drop('Ticker', axis=1, inplace=True)
-    y = df[target]
-    X = df.drop(target,axis=1)
+    df2 = df.copy()
+    print(df2.head())
+    print('\n')
+    #a = df['Ticker']
+    # df.drop('Ticker', axis=1, inplace=True)
+    df3 = df[list(df.columns)[2:]]
+
+    y = df3[target]
+    X = df3.drop(target,axis=1)
     X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
 
     for fet in l:
@@ -61,13 +67,16 @@ if __name__ == "__main__":
         df2 = pd.DataFrame(ump.umres, columns=['UMAP 1', 'UMAP 2'])
         df2[target] = y
         df2.to_csv('./../Dataset/umap reduced/Uv'+str(b)+'.csv')
-        if b == 21:
+
+        if b == 16:
             #ump.plot()
             #plt.show()
 
             
             knn = KNeighborsClassifier(n_neighbors=1)
             knn.fit(ump.umres, y)
+            ump.plot()
+            plt.show()
             plot_decision_regions(np.array(ump.umres), np.array(y), clf=knn, legend=2)
             plt.show()
         """
