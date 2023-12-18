@@ -1,8 +1,6 @@
 # Stock Data Analysis and Clustering
 
 
-LINK OF GITHUB REPO: https://github.com/mrjorgeparr/StockAnalysis-tool
-
 ## Overview
 
 This project is a web analytics tool for scraping data from Yahoo Finance to obtain key financial features of stocks. The objective is to provide insights into stock clustering based on these features and  importance of different financial features for predicting the discretized dividend rate, employing graph theory.
