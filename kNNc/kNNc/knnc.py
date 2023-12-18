@@ -1,7 +1,7 @@
 # mypackage/knnc.py
 import numpy as np
 from sklearn.neighbors import NearestNeighbors, KNeighborsClassifier
-from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.metrics import accuracy_score
 from scipy.spatial import cKDTree
 
 class kNNc:
@@ -21,7 +21,6 @@ class kNNc:
         #NearestNeighbors(n_neighbors=self.c).fit(self.subset)
         print('K-nearest neighbor classifier fits')
 
-        
 
     def get_c_classes(self, X):
         # X is a row, a single point

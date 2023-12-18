@@ -165,6 +165,9 @@ def add_metrics_from_site(driver, metrics, metrics_by_label, tickername):
 
 
 def extract_table_rows_from_history_view(driver):
+    """
+    Function used to extract rows from a history table, use recurrently for extracting data
+    """
     body_id = 'Col1-1-HistoricalDataTable-Proxy'
 
     if len(driver.find_elements(By.ID, body_id)) == 0:
